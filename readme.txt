@@ -17,11 +17,15 @@ Installer les paquets pour docker et docker-compose :
 
 Pour adapter la configuration à votre infrastructure, il faudra remplacer les valeures suivantes dans le docker-compose.yml :
   
-  -Dans le container traefik: "traefik.frontend.rule=Host:domain.com" Remplacer "domain.com" par le votre.
+  Dans le service traefik: 
+    - - --certificatesresolvers.leresolver.acme.email=adresse@domaine.com Remplacez l'adresse par la votre.
+    - - "traefik.http.routers.traefik.rule=Host(`domaine.fr`)" Remplacez domaine.fr par le votre
 
-  -Dans le container whoami: "traefik.frontend.rule=Host:first.container.domain.com" Remplacer "domain.com" par le votre
+  Dans le service whoami:
+    - - "traefik.http.routers.whoami1.rule=Host(`first.container.domaine.fr`)" Remplacez domaine.fr par le votre
        
-  -Dans le container whoami2: "traefik.frontend.rule=Host:second.container.domain.com" Remplacer "domain.com" par le votre
+  Dans le service whoami2:
+    - - "traefik.http.routers.whoami2.rule=Host(`second.container.crytom.fr`)" Remplacez domaine.fr par le votre
 
 
 Pour lancer les services, effectuez la commande suivante : docker-compose up -d
