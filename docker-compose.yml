@@ -17,7 +17,7 @@ services:
             - "traefik.port=8080"
             - "traefik.entryPoint=https"
             - "traefik.backend=traefik"
-            - "traefik.frontend.rule=Host:crytom.fr"
+            - "traefik.frontend.rule=Host:domain.com"
         networks:
             - traefik_network
     
@@ -29,7 +29,7 @@ services:
             - "traefik.docker.network=traefik_network"
             - "traefik.entryPoint=https"
             - "traefik.backend=whoami"
-            - "traefik.frontend.rule=Host:first.container.crytom.fr"
+            - "traefik.frontend.rule=Host:domain.com"
         networks:
             - traefik_network
 
@@ -40,7 +40,7 @@ services:
             - "traefik.docker.network=traefik_network"
             - "traefik.entryPoint=https"
             - "traefik.backend=whoami2"
-            - "traefik.frontend.rule=Host:second.container.crytom.fr"
+            - "traefik.frontend.rule=Host:domain.com"
         networks:
             - traefik_network
 networks:
