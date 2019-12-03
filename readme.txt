@@ -24,14 +24,4 @@ Pour adapter la configuration à votre infrastructure, il faudra remplacer les v
   -Dans le container whoami2: "traefik.frontend.rule=Host:second.container.domain.com" Remplacer "domain.com" par le votre
 
 
-Ensuite, dans le répertoire "conf", ouvrez le fichier traefik.toml et remplacez les valeures suivantes :
-
-  - Remplacez domain.com par le votre
-   [docker]
-   domain = "domain.com"
-
-  - Remplacez l'adresse mail par la votre
-   [acme]
-   email = "monadresse@domain.com"
-
-Pour lancer les containers, effectuez la commande suivante : docker-compose up -d
+Pour lancer les services, effectuez la commande suivante : docker-compose up -d

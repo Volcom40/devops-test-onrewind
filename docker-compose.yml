@@ -1,48 +1,57 @@
-version: '3.2'
+version: "3.3"
+
 services:
-    traefik:
-        image: traefik:1.7.3
-        restart: always
-        command: --api --docker
-        ports:
-            - "80:80"     # Le port HTTP
-            - "443:443"   # Le port HTTPS
-        volumes:
-            - /var/run/docker.sock:/var/run/docker.sock 
-            - ./conf/traefik.toml:/traefik.toml
-            - ./conf/acme.json:/acme.json
-        labels:
-            - "traefik.enable=true"
-            - "traefik.docker.network=traefik_network"
-            - "traefik.port=8080"
-            - "traefik.entryPoint=https"
-            - "traefik.backend=traefik"
-            - "traefik.frontend.rule=Host:domain.com"
-        networks:
-            - traefik_network
-    
+  traefik:
+    image: "traefik:v2.0.0"
+    command:
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --providers.docker
+      - --api
+      - --certificatesresolvers.leresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
+      - --certificatesresolvers.leresolver.acme.email=t.picard@intech-sud.fr
+      - --certificatesresolvers.leresolver.acme.storage=/acme.json
+      - --certificatesresolvers.leresolver.acme.tlschallenge=true
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./acme.json:/acme.json"
+    labels:
+      # Labels pour acceder au Dashboard
+      - "traefik.http.routers.traefik.rule=Host(`crytom.fr`)"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.routers.traefik.tls.certresolver=leresolver"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.middlewares=authtraefik"
+      - "traefik.http.middlewares.authtraefik.basicauth.users=user:$$apr1$$q8eZFHjF$$Fvmkk//V6Btlaf2i/ju5n/"
+      
+      # Redirection globale vers le port HTTPS
+      - "traefik.http.routers.http-catchall.rule=hostregexp(`{host:.+}`)"
+      - "traefik.http.routers.http-catchall.entrypoints=web"
+      - "traefik.http.routers.http-catchall.middlewares=redirect-to-https"
 
-    whoami:
-        image: containous/whoami
-        labels:
-            - "traefik.enable=true"
-            - "traefik.docker.network=traefik_network"
-            - "traefik.entryPoint=https"
-            - "traefik.backend=whoami"
-            - "traefik.frontend.rule=Host:first.container.domain.com"
-        networks:
-            - traefik_network
+      # middleware rediction pour le https
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
 
-    whoami2:
-        image: containous/whoami
-        labels:
-            - "traefik.enable=true"
-            - "traefik.docker.network=traefik_network"
-            - "traefik.entryPoint=https"
-            - "traefik.backend=whoami2"
-            - "traefik.frontend.rule=Host:second.container.domain.com"
-        networks:
-            - traefik_network
-networks:
-    traefik_network:
-        external: true
+  whoami1:
+    image: containous/whoami:v1.3.0
+    labels:
+      - "traefik.http.routers.whoami1.rule=Host(`first.container.crytom.fr`)"
+      - "traefik.http.routers.whoami1.entrypoints=websecure"
+      - "traefik.http.routers.whoami1.tls=true"
+      - "traefik.http.routers.whoami1.tls.certresolver=leresolver"
+
+  whoami2:
+    image: containous/whoami:v1.3.0
+    labels:
+      - "traefik.http.routers.whoami2.rule=Host(`second.container.crytom.fr`)"
+      - "traefik.http.routers.whoami2.entrypoints=websecure"
+      - "traefik.http.routers.whoami2.tls=true"
+      - "traefik.http.routers.whoami2.tls.certresolver=leresolver"
+
+# Dashboard activé
+# Authentification pour le dashboard (login = user | password = password)
+# HTTP redirigé automatiquement vers HTTPS
+# Génération de certificats via 
