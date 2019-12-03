@@ -29,7 +29,7 @@ services:
             - "traefik.docker.network=traefik_network"
             - "traefik.entryPoint=https"
             - "traefik.backend=whoami"
-            - "traefik.frontend.rule=Host:domain.com"
+            - "traefik.frontend.rule=Host:first.container.domain.com"
         networks:
             - traefik_network
 
@@ -40,7 +40,7 @@ services:
             - "traefik.docker.network=traefik_network"
             - "traefik.entryPoint=https"
             - "traefik.backend=whoami2"
-            - "traefik.frontend.rule=Host:domain.com"
+            - "traefik.frontend.rule=Host:second.container.domain.com"
         networks:
             - traefik_network
 networks:
