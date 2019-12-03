@@ -1,14 +1,14 @@
 version: '3.2'
 services:
     traefik:
-        image: traefik:1.7.3 # The official Traefik docker image
+        image: traefik:1.7.3
         restart: always
-        command: --api --docker # Enables the web UI and tells Traefik to listen to docker
+        command: --api --docker
         ports:
-            - "80:80"     # The HTTP port
-            - "443:443"   # The HTTPS port
+            - "80:80"     # Le port HTTP
+            - "443:443"   # Le port HTTPS
         volumes:
-            - /var/run/docker.sock:/var/run/docker.sock # So that Traefik can listen to the Docker events
+            - /var/run/docker.sock:/var/run/docker.sock 
             - ./conf/traefik.toml:/traefik.toml
             - ./conf/acme.json:/acme.json
         labels:
