@@ -9,7 +9,7 @@ services:
       - --providers.docker
       - --api
       - --certificatesresolvers.leresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
-      - --certificatesresolvers.leresolver.acme.email=t.picard@intech-sud.fr
+      - --certificatesresolvers.leresolver.acme.email=monadresse@domaine.com
       - --certificatesresolvers.leresolver.acme.storage=/acme.json
       - --certificatesresolvers.leresolver.acme.tlschallenge=true
     ports:
@@ -18,9 +18,10 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "./acme.json:/acme.json"
+      - "./conf/conf.yml:/conf.yml"
     labels:
       # Labels pour acceder au Dashboard
-      - "traefik.http.routers.traefik.rule=Host(`crytom.fr`)"
+      - "traefik.http.routers.traefik.rule=Host(`mondomaine.com`)"
       - "traefik.http.routers.traefik.service=api@internal"
       - "traefik.http.routers.traefik.tls.certresolver=leresolver"
       - "traefik.http.routers.traefik.entrypoints=websecure"
@@ -38,7 +39,7 @@ services:
   whoami1:
     image: containous/whoami:v1.3.0
     labels:
-      - "traefik.http.routers.whoami1.rule=Host(`first.container.crytom.fr`)"
+      - "traefik.http.routers.whoami1.rule=Host(`first.container.mondomaine.com`)"
       - "traefik.http.routers.whoami1.entrypoints=websecure"
       - "traefik.http.routers.whoami1.tls=true"
       - "traefik.http.routers.whoami1.tls.certresolver=leresolver"
@@ -46,7 +47,7 @@ services:
   whoami2:
     image: containous/whoami:v1.3.0
     labels:
-      - "traefik.http.routers.whoami2.rule=Host(`second.container.crytom.fr`)"
+      - "traefik.http.routers.whoami2.rule=Host(`second.container.mondomaine.com`)"
       - "traefik.http.routers.whoami2.entrypoints=websecure"
       - "traefik.http.routers.whoami2.tls=true"
       - "traefik.http.routers.whoami2.tls.certresolver=leresolver"
